@@ -39,15 +39,32 @@ const Home = ({ isDark, setIsDark }) => {
     return match ? match[1].trim() : response.trim();
   }
 
-  // ⚠️ API Key (you said you want it inside the file)
-  const ai = new GoogleGenAI({
-    apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-  });
+
+  // ✅ Feature flag
+  const AI_ENABLED = import.meta.env.VITE_ENABLE_AI === "true";
+
+  // ✅ Initialize Gemini ONLY if enabled
+  let ai = null;
+
+  if (AI_ENABLED) {
+    ai = new GoogleGenAI({
+      apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+    });
+  }
+
+  // const ai = new GoogleGenAI({
+  //   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+  // });
 
   // ✅ Generate code
   async function getResponse() {
     if (!prompt.trim()) return toast.error("Please describe your component first");
-
+    
+    if (!AI_ENABLED) {
+      toast.info("AI generation is disabled in the demo deployment. Contact the author to enable it.");
+      return;
+    }
+    
     try {
       setLoading(true);
       const response = await ai.models.generateContent({
