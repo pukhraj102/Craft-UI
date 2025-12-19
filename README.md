@@ -47,11 +47,6 @@ npm install
 npm run dev
 ```
 
----
-
-## 📂 Demo
-
-**Live Site:** [View Live on Netlify]()
 
 ---
 
